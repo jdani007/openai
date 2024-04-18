@@ -29,19 +29,19 @@ func main() {
 			Content: response,
 		})
 
-		userPrompt, err := getInput()
+		content, err := getInput()
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		if userPrompt == "exit" {
+		if content == "exit" {
 			fmt.Println("\nAssistant: Goodbye!")
 			return
 		}
 
 		context = append(context, openai.ChatCompletionMessage{
 			Role: openai.ChatMessageRoleUser,
-			Content: userPrompt,
+			Content: content,
 		})
 	}
 }
