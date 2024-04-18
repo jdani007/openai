@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	
+
 	context, err := generatePrompt()
 	if err != nil {
 		log.Fatal(err)
@@ -25,7 +25,7 @@ func main() {
 		}
 
 		context = append(context, openai.ChatCompletionMessage{
-			Role: openai.ChatMessageRoleAssistant,
+			Role:    openai.ChatMessageRoleAssistant,
 			Content: response,
 		})
 
@@ -40,7 +40,7 @@ func main() {
 		}
 
 		context = append(context, openai.ChatCompletionMessage{
-			Role: openai.ChatMessageRoleUser,
+			Role:    openai.ChatMessageRoleUser,
 			Content: content,
 		})
 	}
@@ -52,9 +52,9 @@ func generatePrompt() ([]openai.ChatCompletionMessage, error) {
 		return nil, err
 	}
 
-	return []openai.ChatCompletionMessage {
+	return []openai.ChatCompletionMessage{
 		{
-			Role: openai.ChatMessageRoleSystem,
+			Role:    openai.ChatMessageRoleSystem,
 			Content: content,
 		},
 	}, nil
@@ -70,21 +70,21 @@ func getCompletion(temp float32, ctx []openai.ChatCompletionMessage) (string, er
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: openai.GPT3Dot5Turbo,
-			Messages: ctx,
+			Model:       openai.GPT3Dot5Turbo,
+			Messages:    ctx,
 			Temperature: temp,
 		},
 	)
 	if err != nil {
 		return "", fmt.Errorf("ChatCompletion error: %v", err)
 	}
-	fmt.Println("\nAssistant:",resp.Choices[0].Message.Content)
+	fmt.Println("\nAssistant:", resp.Choices[0].Message.Content)
 
 	return resp.Choices[0].Message.Content, nil
 }
 
 func getInput() (string, error) {
-	
+
 	fmt.Print("\nUser: ")
 	r := bufio.NewReader(os.Stdin)
 	s, err := r.ReadString('\n')
