@@ -17,9 +17,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	client, err := newClient()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	for {
-		response, err := getCompletion(0, context)
+		response, err := getCompletion(0, context, client)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -47,6 +51,7 @@ func main() {
 }
 
 func generatePrompt() ([]openai.ChatCompletionMessage, error) {
+
 	content, err := getInput()
 	if err != nil {
 		return nil, err
@@ -60,13 +65,8 @@ func generatePrompt() ([]openai.ChatCompletionMessage, error) {
 	}, nil
 }
 
-func getCompletion(temp float32, ctx []openai.ChatCompletionMessage) (string, error) {
-	creds, ok := os.LookupEnv("OPENAPI")
-	if !ok {
-		return "", fmt.Errorf("missing environment variable 'OPENAPI'")
-	}
+func getCompletion(temp float32, ctx []openai.ChatCompletionMessage, client *openai.Client) (string, error) {
 
-	client := openai.NewClient(creds)
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
@@ -78,6 +78,7 @@ func getCompletion(temp float32, ctx []openai.ChatCompletionMessage) (string, er
 	if err != nil {
 		return "", fmt.Errorf("ChatCompletion error: %v", err)
 	}
+
 	fmt.Println("\nAssistant:", resp.Choices[0].Message.Content)
 
 	return resp.Choices[0].Message.Content, nil
@@ -93,4 +94,13 @@ func getInput() (string, error) {
 	}
 
 	return strings.TrimSpace(s), nil
+}
+
+func newClient() (*openai.Client, error) {
+	creds, ok := os.LookupEnv("OPENAPI")
+	if !ok {
+		return nil, fmt.Errorf("missing environment variable 'OPENAPI'")
+	}
+
+	return openai.NewClient(creds), nil
 }
