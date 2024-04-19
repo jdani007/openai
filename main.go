@@ -60,12 +60,14 @@ func generatePrompt() ([]openai.ChatCompletionMessage, *openai.Client, error) {
 		return nil, nil, err
 	}
 
-	context = []openai.ChatCompletionMessage{
+	ctx := []openai.ChatCompletionMessage{
 		{
 			Role:    openai.ChatMessageRoleSystem,
 			Content: content,
 		},
-	}, client, nil
+	}
+
+	return ctx, client, nil
 
 }
 
