@@ -41,6 +41,11 @@ func main() {
 				log.Fatal(err)
 			}
 			return
+		case "reset":
+			context, _, err = generatePrompt()
+			if err != nil {
+				log.Fatal(err)
+			}
 		case "exit":
 			fmt.Print("\nAssistant: Goodbye!\n")
 			return
@@ -58,15 +63,10 @@ func generatePrompt() ([]openai.ChatCompletionMessage, *openai.Client, error) {
 		return nil, nil, err
 	}
 
-	content, err := getInput()
-	if err != nil {
-		return nil, nil, err
-	}
-
 	ctx := []openai.ChatCompletionMessage{
 		{
 			Role:    openai.ChatMessageRoleSystem,
-			Content: content,
+			Content: "Hi",
 		},
 	}
 
@@ -159,6 +159,6 @@ func updateContext(content, role string, ctx []openai.ChatCompletionMessage) []o
 func timer() {
 	for {
 		fmt.Print(".")
-		time.Sleep(time.Second * 2)
+		time.Sleep(time.Second * 1)
 	}
 }
