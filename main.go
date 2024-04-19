@@ -16,39 +16,34 @@ import (
 func main() {
 
 	context, client, err := generatePrompt()
-	if err != nil {
-		log.Fatal(err)
-	}
+	logError(err)
 
 	for {
 		summary, err := getCompletion(0, context, client)
-		if err != nil {
-			log.Fatal(err)
-		}
+		logError(err)
 
 		context = updateContext(summary, openai.ChatMessageRoleAssistant, context)
 
 		userPrompt, err := getInput()
-		if err != nil {
-			log.Fatal(err)
-		}
+		logError(err)
 
 		switch userPrompt {
 		case "generate image":
 			fmt.Print("\nAssistant: Generating image")
 			go timer()
-			if err := generateImage(summary, client); err != nil {
-				log.Fatal(err)
-			}
+
+			err := generateImage(summary, client)
+			logError(err)
 			return
+
 		case "reset":
 			context, _, err = generatePrompt()
-			if err != nil {
-				log.Fatal(err)
-			}
-		case "exit":
+			logError(err)
+
+		case "exit", "quit":
 			fmt.Print("\nAssistant: Goodbye!\n")
 			return
+
 		default:
 			context = updateContext(userPrompt, openai.ChatMessageRoleUser, context)
 		}
@@ -66,7 +61,7 @@ func generatePrompt() ([]openai.ChatCompletionMessage, *openai.Client, error) {
 	ctx := []openai.ChatCompletionMessage{
 		{
 			Role:    openai.ChatMessageRoleSystem,
-			Content: "Hi",
+			Content: "Hello",
 		},
 	}
 
@@ -160,5 +155,11 @@ func timer() {
 	for {
 		fmt.Print(".")
 		time.Sleep(time.Second * 1)
+	}
+}
+
+func logError(err error) {
+	if err != nil {
+		log.Fatal(err)
 	}
 }
