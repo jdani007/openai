@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 
 	openai "github.com/sashabaranov/go-openai"
 )
@@ -113,7 +114,8 @@ func newClient() (*openai.Client, error) {
 
 func generateImage(summary string, client *openai.Client) error {
 
-	fmt.Println("\nGenerating image...")
+	fmt.Print("\nGenerating image")
+	go timer()
 
 	resp, err := client.CreateImage(
 		context.Background(),
@@ -153,4 +155,11 @@ func updateContext(content, role string, ctx []openai.ChatCompletionMessage) []o
 	})
 
 	return ctx
+}
+
+func timer() {
+	for {
+		fmt.Print(".")
+		time.Sleep(time.Second * 2)
+	}
 }
