@@ -42,6 +42,10 @@ func main() {
 
 		if userPrompt == "exit" {
 			fmt.Printf("\nAssistant: Goodbye!\n")
+			return
+		}
+		if userPrompt == "generate image" {
+			fmt.Println()
 			break
 		}
 
@@ -113,7 +117,7 @@ func newClient() (*openai.Client, error) {
 
 func generateImage(summary string, client *openai.Client) error {
 
-	fmt.Println(summary)
+	fmt.Println("Generating image...")
 
 	resp, err := client.CreateImage(
 		context.Background(),
