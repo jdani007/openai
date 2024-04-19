@@ -13,13 +13,18 @@ import (
 	openai "github.com/sashabaranov/go-openai"
 )
 
+const (
+	defaultTemperature = 0
+	defaultGreeting    = "Hello"
+)
+
 func main() {
 
 	context, client, err := generatePrompt()
 	logError(err)
 
 	for {
-		summary, err := getCompletion(0, context, client)
+		summary, err := getCompletion(context, client)
 		logError(err)
 
 		fmt.Println("\nAssistant:", summary)
@@ -63,7 +68,7 @@ func generatePrompt() ([]openai.ChatCompletionMessage, *openai.Client, error) {
 	ctx := []openai.ChatCompletionMessage{
 		{
 			Role:    openai.ChatMessageRoleSystem,
-			Content: "Hello",
+			Content: defaultGreeting,
 		},
 	}
 
@@ -71,14 +76,14 @@ func generatePrompt() ([]openai.ChatCompletionMessage, *openai.Client, error) {
 
 }
 
-func getCompletion(temp float32, ctx []openai.ChatCompletionMessage, client *openai.Client) (string, error) {
+func getCompletion(ctx []openai.ChatCompletionMessage, client *openai.Client) (string, error) {
 
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
 			Model:       openai.GPT3Dot5Turbo,
 			Messages:    ctx,
-			Temperature: temp,
+			Temperature: defaultTemperature,
 		},
 	)
 	if err != nil {
