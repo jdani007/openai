@@ -35,12 +35,14 @@ func main() {
 
 		switch userPrompt {
 		case "generate image":
+			fmt.Print("\nAssistant: Generating image")
+			go timer()
 			if err := generateImage(summary, client); err != nil {
 				log.Fatal(err)
 			}
 			return
 		case "exit":
-			fmt.Printf("\nAssistant: Goodbye!\n")
+			fmt.Print("\nAssistant: Goodbye!\n")
 			return
 		default:
 			context = updateContext(userPrompt, openai.ChatMessageRoleUser, context)
@@ -113,9 +115,6 @@ func newClient() (*openai.Client, error) {
 }
 
 func generateImage(summary string, client *openai.Client) error {
-
-	fmt.Print("\nGenerating image")
-	go timer()
 
 	resp, err := client.CreateImage(
 		context.Background(),
