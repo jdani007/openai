@@ -29,10 +29,7 @@ func main() {
 			log.Fatal(err)
 		}
 
-		context = append(context, openai.ChatCompletionMessage{
-			Role:    openai.ChatMessageRoleAssistant,
-			Content: summary,
-		})
+		context = updateContext(summary, context)
 
 		userPrompt, err := getInput()
 		if err != nil {
@@ -49,13 +46,8 @@ func main() {
 			}
 			return
 		}
-
-		context = append(context, openai.ChatCompletionMessage{
-			Role:    openai.ChatMessageRoleUser,
-			Content: userPrompt,
-		})
+		context = updateContext(userPrompt, context)
 	}
-
 
 }
 
@@ -116,7 +108,7 @@ func newClient() (*openai.Client, error) {
 
 func generateImage(summary string, client *openai.Client) error {
 
-	fmt.Print("\nGenerating image...")
+	fmt.Println("\nGenerating image...")
 
 	resp, err := client.CreateImage(
 		context.Background(),
@@ -146,4 +138,14 @@ func displayImage(url string) error {
 		return err
 	}
 	return nil
+}
+
+func updateContext(input string, context []openai.ChatCompletionMessage) []openai.ChatCompletionMessage {
+
+	context = append(context, openai.ChatCompletionMessage{
+		Role:    openai.ChatMessageRoleAssistant,
+		Content: input,
+	})
+
+	return context
 }
