@@ -14,11 +14,7 @@ import (
 
 func main() {
 
-	context, err := generatePrompt()
-	if err != nil {
-		log.Fatal(err)
-	}
-	client, err := newClient()
+	context, client, err := generatePrompt()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -52,11 +48,16 @@ func main() {
 
 }
 
-func generatePrompt() ([]openai.ChatCompletionMessage, error) {
+func generatePrompt() ([]openai.ChatCompletionMessage, *openai.Client,  error) {
+
+	client, err := newClient()
+	if err != nil {
+		return nil, nil, err
+	}
 
 	content, err := getInput()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	return []openai.ChatCompletionMessage{
@@ -64,7 +65,8 @@ func generatePrompt() ([]openai.ChatCompletionMessage, error) {
 			Role:    openai.ChatMessageRoleSystem,
 			Content: content,
 		},
-	}, nil
+	}, client, nil
+
 }
 
 func getCompletion(temp float32, ctx []openai.ChatCompletionMessage, client *openai.Client) (string, error) {
