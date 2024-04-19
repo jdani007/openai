@@ -68,7 +68,7 @@ func generatePrompt() ([]openai.ChatCompletionMessage, *openai.Client, error) {
 	ctx := []openai.ChatCompletionMessage{
 		{
 			Role:    openai.ChatMessageRoleSystem,
-			Content: defaultGreeting,
+			Content: greeting,
 		},
 	}
 
@@ -83,7 +83,7 @@ func getCompletion(ctx []openai.ChatCompletionMessage, client *openai.Client) (s
 		openai.ChatCompletionRequest{
 			Model:       openai.GPT3Dot5Turbo,
 			Messages:    ctx,
-			Temperature: defaultTemperature,
+			Temperature: temperature,
 		},
 	)
 	if err != nil {
