@@ -23,9 +23,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	var summary string
 	for {
-		summary, err = getCompletion(0, context, client)
+		summary, err := getCompletion(0, context, client)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -45,8 +44,10 @@ func main() {
 			return
 		}
 		if userPrompt == "generate image" {
-			fmt.Println()
-			break
+			if err := generateImage(summary, client); err != nil {
+				log.Fatal(err)
+			}
+			return
 		}
 
 		context = append(context, openai.ChatCompletionMessage{
@@ -54,9 +55,7 @@ func main() {
 			Content: userPrompt,
 		})
 	}
-	if err := generateImage(summary, client); err != nil {
-		log.Fatal(err)
-	}
+
 
 }
 
@@ -117,7 +116,7 @@ func newClient() (*openai.Client, error) {
 
 func generateImage(summary string, client *openai.Client) error {
 
-	fmt.Println("Generating image...")
+	fmt.Print("\nGenerating image...")
 
 	resp, err := client.CreateImage(
 		context.Background(),
