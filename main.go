@@ -22,6 +22,8 @@ func main() {
 		summary, err := getCompletion(0, context, client)
 		logError(err)
 
+		fmt.Println("\nAssistant:", summary)
+
 		context = updateContext(summary, openai.ChatMessageRoleAssistant, context)
 
 		userPrompt, err := getInput()
@@ -82,8 +84,6 @@ func getCompletion(temp float32, ctx []openai.ChatCompletionMessage, client *ope
 	if err != nil {
 		return "", fmt.Errorf("ChatCompletion error: %v", err)
 	}
-
-	fmt.Println("\nAssistant:", resp.Choices[0].Message.Content)
 
 	return resp.Choices[0].Message.Content, nil
 }
