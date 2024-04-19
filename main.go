@@ -141,11 +141,11 @@ func displayImage(url string) error {
 	return nil
 }
 
-func updateContext(input, role string, context []openai.ChatCompletionMessage) []openai.ChatCompletionMessage {
+func updateContext(content, role string, context []openai.ChatCompletionMessage) []openai.ChatCompletionMessage {
 
 	context = append(context, openai.ChatCompletionMessage{
 		Role:    role,
-		Content: input,
+		Content: content,
 	})
 
 	return context
