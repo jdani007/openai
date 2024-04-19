@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	defaultTemperature = 0
-	defaultGreeting    = "Hello"
+	temperature = 0
+	greeting    = "Hello"
 )
 
 func main() {
