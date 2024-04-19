@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"strings"
 
 	openai "github.com/sashabaranov/go-openai"
@@ -22,32 +23,37 @@ func main() {
 		log.Fatal(err)
 	}
 
+	var summary string
 	for {
-		response, err := getCompletion(0, context, client)
+		summary, err = getCompletion(0, context, client)
 		if err != nil {
 			log.Fatal(err)
 		}
 
 		context = append(context, openai.ChatCompletionMessage{
 			Role:    openai.ChatMessageRoleAssistant,
-			Content: response,
+			Content: summary,
 		})
 
-		content, err := getInput()
+		userPrompt, err := getInput()
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		if content == "exit" {
-			fmt.Println("\nAssistant: Goodbye!")
-			return
+		if userPrompt == "exit" {
+			fmt.Printf("\nAssistant: Goodbye!\n")
+			break
 		}
 
 		context = append(context, openai.ChatCompletionMessage{
 			Role:    openai.ChatMessageRoleUser,
-			Content: content,
+			Content: userPrompt,
 		})
 	}
+	if err := generateImage(summary, client); err != nil {
+		log.Fatal(err)
+	}
+
 }
 
 func generatePrompt() ([]openai.ChatCompletionMessage, error) {
@@ -103,4 +109,38 @@ func newClient() (*openai.Client, error) {
 	}
 
 	return openai.NewClient(creds), nil
+}
+
+func generateImage(summary string, client *openai.Client) error {
+	
+	fmt.Println(summary)
+
+	resp, err := client.CreateImage(
+		context.Background(),
+		openai.ImageRequest{
+			Model: openai.CreateImageModelDallE3,
+			Prompt:         summary,
+			Size:           openai.CreateImageSize1024x1024,
+			Quality: openai.CreateImageQualityStandard,
+			N:              1,
+		},
+	)
+	if err != nil {
+		return fmt.Errorf("image creation error: %v", err)
+	}
+
+	if err := displayImage(resp.Data[0].URL); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func displayImage(url string) error {
+
+	cmd := exec.Command("open", url)
+	if err := cmd.Run(); err != nil {
+		return err
+	}
+	return nil
 }
