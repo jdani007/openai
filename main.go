@@ -103,26 +103,26 @@ func getInput() (string, error) {
 }
 
 func newClient() (*openai.Client, error) {
-	creds, ok := os.LookupEnv("OPENAPI")
+	creds, ok := os.LookupEnv("OPENAI")
 	if !ok {
-		return nil, fmt.Errorf("missing environment variable 'OPENAPI'")
+		return nil, fmt.Errorf("missing environment variable 'OPENAI'")
 	}
 
 	return openai.NewClient(creds), nil
 }
 
 func generateImage(summary string, client *openai.Client) error {
-	
+
 	fmt.Println(summary)
 
 	resp, err := client.CreateImage(
 		context.Background(),
 		openai.ImageRequest{
-			Model: openai.CreateImageModelDallE3,
-			Prompt:         summary,
-			Size:           openai.CreateImageSize1024x1024,
+			Model:   openai.CreateImageModelDallE3,
+			Prompt:  summary,
+			Size:    openai.CreateImageSize1024x1024,
 			Quality: openai.CreateImageQualityStandard,
-			N:              1,
+			N:       1,
 		},
 	)
 	if err != nil {
