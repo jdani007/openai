@@ -33,18 +33,18 @@ func main() {
 			log.Fatal(err)
 		}
 
-		if userPrompt == "exit" {
-			fmt.Printf("\nAssistant: Goodbye!\n")
-			return
-		}
-		if userPrompt == "generate image" {
+		switch userPrompt {
+		case "generate image":
 			if err := generateImage(summary, client); err != nil {
 				log.Fatal(err)
 			}
 			return
+		case "exit":
+			fmt.Printf("\nAssistant: Goodbye!\n")
+			return
+		default:
+			context = updateContext(userPrompt, openai.ChatMessageRoleUser, context)
 		}
-
-		context = updateContext(userPrompt, openai.ChatMessageRoleUser, context)
 	}
 
 }
