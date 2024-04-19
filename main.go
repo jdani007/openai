@@ -48,7 +48,7 @@ func main() {
 
 }
 
-func generatePrompt() ([]openai.ChatCompletionMessage, *openai.Client,  error) {
+func generatePrompt() ([]openai.ChatCompletionMessage, *openai.Client, error) {
 
 	client, err := newClient()
 	if err != nil {
@@ -60,7 +60,7 @@ func generatePrompt() ([]openai.ChatCompletionMessage, *openai.Client,  error) {
 		return nil, nil, err
 	}
 
-	return []openai.ChatCompletionMessage{
+	context = []openai.ChatCompletionMessage{
 		{
 			Role:    openai.ChatMessageRoleSystem,
 			Content: content,
@@ -143,12 +143,12 @@ func displayImage(url string) error {
 	return nil
 }
 
-func updateContext(content, role string, context []openai.ChatCompletionMessage) []openai.ChatCompletionMessage {
+func updateContext(content, role string, ctx []openai.ChatCompletionMessage) []openai.ChatCompletionMessage {
 
-	context = append(context, openai.ChatCompletionMessage{
+	ctx = append(ctx, openai.ChatCompletionMessage{
 		Role:    role,
 		Content: content,
 	})
 
-	return context
+	return ctx
 }
