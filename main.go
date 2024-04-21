@@ -15,7 +15,7 @@ import (
 
 const (
 	temperature     = 0
-	defaultGreeting = "Hello, you are a friendly assistant."
+	defaultGreeting = "Hello, you are a friendly assistant that responds in a prefessional, tweet friendly manner."
 )
 
 func main() {
@@ -36,9 +36,6 @@ func main() {
 
 		switch userPrompt {
 		case "generate image":
-			fmt.Print("\nAssistant: Generating image")
-			go timer()
-
 			err := generateImage(summary, client)
 			logError(err)
 			return
@@ -116,6 +113,14 @@ func newClient() (*openai.Client, error) {
 
 func generateImage(summary string, client *openai.Client) error {
 
+	fmt.Print("\nAssistant: Generating image")
+	go func() {
+		for {
+			fmt.Print(".")
+			time.Sleep(time.Second * 1)
+		}
+	}()
+
 	resp, err := client.CreateImage(
 		context.Background(),
 		openai.ImageRequest{
@@ -154,13 +159,6 @@ func updateContext(content, role string, ctx []openai.ChatCompletionMessage) []o
 	})
 
 	return ctx
-}
-
-func timer() {
-	for {
-		fmt.Print(".")
-		time.Sleep(time.Second * 1)
-	}
 }
 
 func logError(err error) {
