@@ -2,7 +2,7 @@ package main
 
 import (
 	"bufio"
-	"context"
+	ctx "context"
 	"fmt"
 	"log"
 	"os"
@@ -74,24 +74,24 @@ func generatePrompt() ([]openai.ChatCompletionMessage, *openai.Client, error) {
 		return nil, nil, err
 	}
 
-	ctx := []openai.ChatCompletionMessage{
+	context := []openai.ChatCompletionMessage{
 		{
 			Role:    openai.ChatMessageRoleSystem,
 			Content: defaultInstruction,
 		},
 	}
 
-	return ctx, client, nil
+	return context, client, nil
 
 }
 
-func getCompletion(ctx []openai.ChatCompletionMessage, client *openai.Client) (string, error) {
+func getCompletion(context []openai.ChatCompletionMessage, client *openai.Client) (string, error) {
 
 	resp, err := client.CreateChatCompletion(
-		context.Background(),
+		ctx.Background(),
 		openai.ChatCompletionRequest{
 			Model:       openai.GPT3Dot5Turbo,
-			Messages:    ctx,
+			Messages:    context,
 			Temperature: temperature,
 		},
 	)
@@ -115,12 +115,12 @@ func getInput() (string, error) {
 }
 
 func newClient() (*openai.Client, error) {
-	creds, ok := os.LookupEnv("OPENAI")
+	c, ok := os.LookupEnv("OPENAI")
 	if !ok {
 		return nil, fmt.Errorf("missing environment variable 'OPENAI'")
 	}
 
-	return openai.NewClient(creds), nil
+	return openai.NewClient(c), nil
 }
 
 func generateImage(summary string, client *openai.Client) error {
@@ -134,7 +134,7 @@ func generateImage(summary string, client *openai.Client) error {
 	}()
 
 	resp, err := client.CreateImage(
-		context.Background(),
+		ctx.Background(),
 		openai.ImageRequest{
 			Model:   openai.CreateImageModelDallE3,
 			Prompt:  summary,
@@ -163,12 +163,12 @@ func displayImage(url string) error {
 	return nil
 }
 
-func updateContext(content, role string, ctx []openai.ChatCompletionMessage) []openai.ChatCompletionMessage {
+func updateContext(content, role string, context []openai.ChatCompletionMessage) []openai.ChatCompletionMessage {
 
-	ctx = append(ctx, openai.ChatCompletionMessage{
+	context = append(context, openai.ChatCompletionMessage{
 		Role:    role,
 		Content: content,
 	})
 
-	return ctx
+	return context
 }
