@@ -34,7 +34,7 @@ Assistant: Imagine a vibrant collage of diverse professionals engaged in online 
 ```
 User: generate image
 
-Generating image...
+Assistant: Generating image............
 ```
 Image will be generated and opened via web browser (I use a mac).
 ![generated image](generated-image.png)
