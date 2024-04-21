@@ -58,7 +58,7 @@ func run(context []openai.ChatCompletionMessage, client *openai.Client) error {
 			}
 
 		case "exit", "quit":
-			fmt.Print("\nAssistant: Goodbye!\n")
+			fmt.Print("\nAssistant: Goodbye!")
 			return nil
 
 		default:
