@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	temperature     = 0
-	defaultGreeting = "Hello, you are a friendly assistant that responds in a prefessional, tweet friendly manner."
+	temperature        = 0
+	defaultInstruction = "Hello, you are a friendly assistant that responds in a prefessional, tweet friendly manner."
 )
 
 func main() {
@@ -77,7 +77,7 @@ func generatePrompt() ([]openai.ChatCompletionMessage, *openai.Client, error) {
 	ctx := []openai.ChatCompletionMessage{
 		{
 			Role:    openai.ChatMessageRoleSystem,
-			Content: defaultGreeting,
+			Content: defaultInstruction,
 		},
 	}
 
